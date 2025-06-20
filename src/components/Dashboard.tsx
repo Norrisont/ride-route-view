@@ -9,6 +9,9 @@ import RideCalendar from "./RideCalendar";
 import VehicleMap from "./VehicleMap";
 import NotificationsPanel from "./NotificationsPanel";
 import RoleBasedStats from "./RoleBasedStats";
+import DataAnalyticsDashboard from "./DataAnalyticsDashboard";
+import ScheduledRides from "./ScheduledRides";
+import PendingRides from "./PendingRides";
 
 const Dashboard = () => {
   const [activeRole, setActiveRole] = useState<"driver" | "admin" | "dispatcher">("driver");
@@ -21,7 +24,7 @@ const Dashboard = () => {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <Car className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-slate-900">FleetDash</h1>
+              <h1 className="text-2xl font-bold text-slate-900">Citigen</h1>
             </div>
             <Badge variant="outline" className="text-green-600 border-green-200">
               Live
@@ -51,7 +54,7 @@ const Dashboard = () => {
         <RoleBasedStats role={activeRole} />
 
         {/* Main Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
           {/* Calendar Section */}
           <div className="lg:col-span-1">
             <Card className="h-fit">
@@ -84,15 +87,26 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Notifications Panel */}
+          <div className="lg:col-span-1">
+            <NotificationsPanel />
+          </div>
+        </div>
+
+        {/* Scheduled Rides and Pending Rides */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <ScheduledRides />
+          <PendingRides />
+        </div>
+
+        {/* Data Analytics Dashboard */}
+        <div className="mt-6">
+          <DataAnalyticsDashboard />
         </div>
 
         {/* Bottom Section */}
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-6">
-          {/* Notifications Panel */}
-          <div className="xl:col-span-1">
-            <NotificationsPanel />
-          </div>
-
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
           {/* Recent Activity */}
           <div className="xl:col-span-2">
             <Card>
