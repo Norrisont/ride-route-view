@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bell, Calendar, Map, Users, Car, TrendingUp, Clock, AlertTriangle } from "lucide-react";
+import { Bell, Calendar, Map, Users, Car, TrendingUp, Clock, AlertTriangle, Download } from "lucide-react";
 import RideCalendar from "./RideCalendar";
 import VehicleMap from "./VehicleMap";
 import NotificationsPanel from "./NotificationsPanel";
@@ -12,9 +12,78 @@ import RoleBasedStats from "./RoleBasedStats";
 import DataAnalyticsDashboard from "./DataAnalyticsDashboard";
 import ScheduledRides from "./ScheduledRides";
 import PendingRides from "./PendingRides";
+import { toast } from "sonner";
 
 const Dashboard = () => {
   const [activeRole, setActiveRole] = useState<"driver" | "admin" | "dispatcher">("driver");
+
+  const downloadDashboardScreenshot = async () => {
+    try {
+      // Create a basic canvas screenshot
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      canvas.width = 1920;
+      canvas.height = 1080;
+
+      // Fill with gradient background
+      const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      gradient.addColorStop(0, '#f8fafc');
+      gradient.addColorStop(1, '#eff6ff');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Add header
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, 80);
+      
+      // Add title
+      ctx.fillStyle = '#1e293b';
+      ctx.font = 'bold 32px Arial';
+      ctx.fillText('Citigen Dashboard', 50, 50);
+
+      // Add role badge
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(300, 25, 60, 30);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '16px Arial';
+      ctx.fillText('Live', 315, 45);
+
+      // Add mock content sections
+      const sections = [
+        { title: 'Vehicle Tracking', x: 50, y: 120, width: 800, height: 400 },
+        { title: 'Notifications', x: 900, y: 120, width: 300, height: 400 },
+        { title: 'Analytics', x: 50, y: 560, width: 600, height: 300 },
+        { title: 'Recent Activity', x: 700, y: 560, width: 500, height: 300 }
+      ];
+
+      sections.forEach(section => {
+        // Section background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(section.x, section.y, section.width, section.height);
+        
+        // Section border
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.strokeRect(section.x, section.y, section.width, section.height);
+        
+        // Section title
+        ctx.fillStyle = '#334155';
+        ctx.font = 'bold 20px Arial';
+        ctx.fillText(section.title, section.x + 20, section.y + 35);
+      });
+
+      // Create download link
+      const link = document.createElement('a');
+      link.download = 'citigen-dashboard-business-model.png';
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+
+      toast("Dashboard screenshot downloaded for your business model!");
+    } catch (error) {
+      toast("Failed to download screenshot");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -40,6 +109,16 @@ const Dashboard = () => {
                 <TabsTrigger value="admin">Admin</TabsTrigger>
               </TabsList>
             </Tabs>
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={downloadDashboardScreenshot}
+              className="flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              Download Screenshot
+            </Button>
             
             <Button variant="outline" size="sm" className="relative">
               <Bell className="h-4 w-4" />
@@ -78,11 +157,12 @@ const Dashboard = () => {
                   <Map className="h-5 w-5 text-green-600" />
                   Vehicle Tracking
                   <Badge variant="secondary" className="ml-auto">
-                    12 Active
+                    {/* Dynamic count */}
+                    7 Vehicles
                   </Badge>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0">
+              <CardContent className="p-0 h-[calc(100%-80px)]">
                 <VehicleMap />
               </CardContent>
             </Card>
