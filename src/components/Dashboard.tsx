@@ -35,7 +35,7 @@ const Dashboard = () => {
         ignoreElements: (element) => {
           // Ignore scroll areas and hidden elements
           return element.tagName === 'SCRIPT' || 
-                 element.style?.display === 'none' ||
+                 (element instanceof HTMLElement && element.style.display === 'none') ||
                  element.classList.contains('sr-only');
         }
       });
