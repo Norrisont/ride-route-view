@@ -1,11 +1,10 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MapPin, Navigation, Car, Download } from "lucide-react";
+import { MapPin, Navigation, Car } from "lucide-react";
 import VehicleMarker from "./VehicleMarker";
 import VehicleInfoPopup from "./VehicleInfoPopup";
 import MapBackground from "./MapBackground";
-import { toast } from "sonner";
 
 const VehicleMap = () => {
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
@@ -28,40 +27,6 @@ const VehicleMap = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, []);
-
-  const downloadScreenshot = async () => {
-    try {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      // Set canvas size
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      // Fill with white background
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Add text indicating this is a demo screenshot
-      ctx.fillStyle = '#333333';
-      ctx.font = '24px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText('Citigen Dashboard Screenshot', canvas.width / 2, 50);
-      ctx.font = '16px Arial';
-      ctx.fillText('Vehicle Tracking Dashboard', canvas.width / 2, 80);
-
-      // Create download link
-      const link = document.createElement('a');
-      link.download = 'citigen-dashboard-screenshot.png';
-      link.href = canvas.toDataURL();
-      link.click();
-
-      toast("Screenshot downloaded successfully!");
-    } catch (error) {
-      toast("Failed to download screenshot");
-    }
-  };
 
   if (!mapLoaded) {
     return (
@@ -100,14 +65,6 @@ const VehicleMap = () => {
         </Button>
         <Button size="sm" variant="outline" className="bg-white/90 backdrop-blur border-gray-300 shadow-sm">
           <MapPin className="h-4 w-4" />
-        </Button>
-        <Button 
-          size="sm" 
-          variant="outline" 
-          className="bg-white/90 backdrop-blur border-gray-300 shadow-sm"
-          onClick={downloadScreenshot}
-        >
-          <Download className="h-4 w-4" />
         </Button>
       </div>
 

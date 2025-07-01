@@ -4,46 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bell, Car, Download } from "lucide-react";
-import { toast } from "sonner";
+import { Bell, Car } from "lucide-react";
 import DriverDashboard from "./DriverDashboard";
 import DispatcherDashboard from "./DispatcherDashboard";
 import AdminDashboard from "./AdminDashboard";
 
 const Dashboard = () => {
   const [activeRole, setActiveRole] = useState<"driver" | "admin" | "dispatcher">("dispatcher");
-
-  const downloadDashboardScreenshot = async () => {
-    try {
-      const { default: html2canvas } = await import('html2canvas');
-      
-      const dashboardElement = document.querySelector('main') || document.body;
-      
-      const canvas = await html2canvas(dashboardElement, {
-        height: window.innerHeight,
-        width: window.innerWidth,
-        scale: 1,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#f8fafc',
-        ignoreElements: (element) => {
-          return element.tagName === 'SCRIPT' || 
-                 (element instanceof HTMLElement && element.style.display === 'none') ||
-                 element.classList.contains('sr-only');
-        }
-      });
-
-      const link = document.createElement('a');
-      link.download = `citigen-dashboard-${activeRole}-${new Date().toISOString().split('T')[0]}.png`;
-      link.href = canvas.toDataURL('image/png', 1.0);
-      link.click();
-
-      toast.success("Dashboard screenshot downloaded successfully!");
-    } catch (error) {
-      console.error('Screenshot error:', error);
-      toast.error("Failed to download screenshot");
-    }
-  };
 
   const renderDashboardContent = () => {
     switch (activeRole) {
@@ -85,16 +52,6 @@ const Dashboard = () => {
                 <TabsTrigger value="admin">Admin</TabsTrigger>
               </TabsList>
             </Tabs>
-            
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={downloadDashboardScreenshot}
-              className="flex items-center gap-2"
-            >
-              <Download className="h-4 w-4" />
-              Download Screenshot
-            </Button>
             
             <Button variant="outline" size="sm" className="relative">
               <Bell className="h-4 w-4" />
