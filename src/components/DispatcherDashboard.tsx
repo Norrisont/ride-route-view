@@ -56,28 +56,28 @@ const DispatcherDashboard = () => {
   };
 
   return (
-    <div className="space-y-4 md:space-y-6">
+    <div className="space-y-3 md:space-y-4 lg:space-y-6 px-2 sm:px-0">
       {/* Dispatch Controls - Mobile responsive */}
       <Card className="border-2 border-blue-200 bg-blue-50">
-        <CardContent className="p-3 md:p-4">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 lg:gap-4">
-            <div className="flex items-center gap-3 md:gap-4">
-              <div className={`w-3 h-3 rounded-full ${autoAssign ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-              <span className="font-medium text-sm md:text-base">Auto-Assignment</span>
-              <Badge variant={autoAssign ? "default" : "secondary"} className="text-xs">
+        <CardContent className="p-2 sm:p-3 md:p-4">
+          <div className="flex flex-col gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${autoAssign ? 'bg-green-500' : 'bg-gray-400'}`}></div>
+              <span className="font-medium text-xs sm:text-sm">Auto-Assignment</span>
+              <Badge variant={autoAssign ? "default" : "secondary"} className="text-xs px-1.5 py-0.5">
                 {autoAssign ? 'ON' : 'OFF'}
               </Badge>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={toggleAutoAssign} variant="outline" size="sm" className="text-xs">
+            <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
+              <Button onClick={toggleAutoAssign} variant="outline" size="sm" className="text-xs h-8">
                 {autoAssign ? 'Disable Auto' : 'Enable Auto'}
               </Button>
-              <Button onClick={handleOptimizeRoutes} variant="outline" size="sm" className="text-xs">
-                <Route className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+              <Button onClick={handleOptimizeRoutes} variant="outline" size="sm" className="text-xs h-8">
+                <Route className="h-3 w-3 mr-1" />
                 Optimize Routes
               </Button>
-              <Button onClick={handleEmergencyDispatch} variant="destructive" size="sm" className="text-xs">
-                <AlertTriangle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+              <Button onClick={handleEmergencyDispatch} variant="destructive" size="sm" className="text-xs h-8">
+                <AlertTriangle className="h-3 w-3 mr-1" />
                 Emergency Mode
               </Button>
             </div>
@@ -85,37 +85,37 @@ const DispatcherDashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Dispatcher Stats - Responsive grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      {/* Dispatcher Stats - Mobile optimized grid */}
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4 lg:gap-4">
         {dispatcherStats.map((stat, index) => (
           <Card key={index}>
-            <CardContent className="p-3 md:p-4">
+            <CardContent className="p-2 sm:p-3">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs md:text-sm text-slate-600">{stat.label}</p>
-                  <p className="text-lg md:text-2xl font-bold">{stat.value}</p>
-                  <p className="text-xs text-slate-500">{stat.subtext}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs text-slate-600 truncate">{stat.label}</p>
+                  <p className="text-sm sm:text-lg font-bold truncate">{stat.value}</p>
+                  <p className="text-xs text-slate-500 truncate">{stat.subtext}</p>
                 </div>
-                <stat.icon className={`h-6 w-6 md:h-8 md:w-8 ${stat.color}`} />
+                <stat.icon className={`h-4 w-4 sm:h-6 sm:w-6 ${stat.color} flex-shrink-0 ml-1`} />
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Main Dashboard Grid - Responsive */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
+      {/* Main Dashboard Grid - Mobile stacked */}
+      <div className="grid grid-cols-1 gap-3 md:gap-4 lg:grid-cols-4 lg:gap-6">
         {/* Vehicle Map */}
         <div className="lg:col-span-2">
-          <Card className="h-[400px] md:h-[500px]">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <MapPin className="h-4 w-4 md:h-5 md:w-5 text-green-600" />
+          <Card className="h-[300px] sm:h-[400px] lg:h-[500px]">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                <MapPin className="h-4 w-4 text-green-600" />
                 Live Vehicle Tracking
-                <Badge variant="secondary" className="ml-auto text-xs">7 Active</Badge>
+                <Badge variant="secondary" className="ml-auto text-xs px-1.5 py-0.5">7 Active</Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0 h-[calc(100%-60px)] md:h-[calc(100%-80px)]">
+            <CardContent className="p-0 h-[calc(100%-50px)] sm:h-[calc(100%-60px)]">
               <VehicleMap />
             </CardContent>
           </Card>
@@ -123,24 +123,24 @@ const DispatcherDashboard = () => {
 
         {/* Available Drivers */}
         <div className="lg:col-span-1">
-          <Card className="h-[400px] md:h-[500px]">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <UserCheck className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
+          <Card className="h-[300px] sm:h-[400px] lg:h-[500px]">
+            <CardHeader className="pb-2 sm:pb-3">
+              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                <UserCheck className="h-4 w-4 text-blue-600" />
                 Available Drivers
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-3 md:p-6">
-              <div className="space-y-3 max-h-80 md:max-h-96 overflow-y-auto">
+            <CardContent className="p-2 sm:p-3">
+              <div className="space-y-2 max-h-60 sm:max-h-80 overflow-y-auto">
                 {availableDrivers.map((driver) => (
-                  <div key={driver.id} className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-sm">{driver.name}</span>
-                      <Badge variant={driver.status === 'available' ? 'default' : 'secondary'} className="text-xs">
+                  <div key={driver.id} className="p-2 sm:p-3 rounded-lg border border-slate-200 hover:bg-slate-50">
+                    <div className="flex items-center justify-between mb-1 sm:mb-2">
+                      <span className="font-medium text-xs sm:text-sm truncate">{driver.name}</span>
+                      <Badge variant={driver.status === 'available' ? 'default' : 'secondary'} className="text-xs px-1.5 py-0.5 flex-shrink-0">
                         {driver.status}
                       </Badge>
                     </div>
-                    <div className="text-xs text-slate-600 space-y-1">
+                    <div className="text-xs text-slate-600 space-y-0.5 sm:space-y-1">
                       <p>Vehicle: {driver.vehicle}</p>
                       <p>Location: {driver.location}</p>
                       <p>Rating: {driver.rating}★</p>
@@ -148,7 +148,7 @@ const DispatcherDashboard = () => {
                     {driver.status === 'available' && (
                       <Button 
                         size="sm" 
-                        className="w-full mt-2 text-xs"
+                        className="w-full mt-1 sm:mt-2 text-xs h-7"
                         onClick={() => handleAssignRide(driver.id, "next-ride")}
                       >
                         Assign Next Ride
@@ -167,38 +167,40 @@ const DispatcherDashboard = () => {
         </div>
       </div>
 
-      {/* Rides Management - Stack on mobile */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+      {/* Rides Management - Mobile stacked */}
+      <div className="grid grid-cols-1 gap-3 md:gap-4 lg:grid-cols-2 lg:gap-6">
         <ScheduledRides />
         <PendingRides />
       </div>
 
       {/* Recent Activity - Mobile optimized */}
       <Card>
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-2 sm:pb-3">
           <CardTitle className="flex flex-col sm:flex-row sm:items-center gap-2">
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
+              <Clock className="h-4 w-4 text-purple-600" />
               Recent Activity
             </div>
-            <Button size="sm" variant="outline" className="self-start sm:ml-auto text-xs">
-              <CheckCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+            <Button size="sm" variant="outline" className="self-start sm:ml-auto text-xs h-7">
+              <CheckCircle className="h-3 w-3 mr-1" />
               Mark All Read
             </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
+        <CardContent className="p-3 sm:p-6">
+          <div className="space-y-2 sm:space-y-3">
             {recentActivity.map((activity, index) => (
-              <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors gap-2">
-                <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
-                    activity.type === 'success' ? 'bg-green-500' :
-                    activity.type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
-                  }`}></div>
-                  <span className="text-sm text-slate-700">{activity.event}</span>
+              <div key={index} className="flex flex-col gap-1 sm:gap-2 p-2 sm:p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
+                <div className="flex items-start sm:items-center justify-between gap-2">
+                  <div className="flex items-start gap-2 min-w-0 flex-1">
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 mt-1 sm:mt-0 ${
+                      activity.type === 'success' ? 'bg-green-500' :
+                      activity.type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+                    }`}></div>
+                    <span className="text-xs sm:text-sm text-slate-700">{activity.event}</span>
+                  </div>
+                  <span className="text-xs text-slate-500 flex-shrink-0">{activity.time}</span>
                 </div>
-                <span className="text-xs text-slate-500 self-start sm:self-center">{activity.time}</span>
               </div>
             ))}
           </div>
