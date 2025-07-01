@@ -3,293 +3,252 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Users,
-  Car,
-  MapPin,
-  Clock,
-  AlertTriangle,
-  CheckCircle,
-  Navigation,
-  TrendingUp,
-  DollarSign,
-  Star,
-  Coffee,
-  UserCheck
-} from "lucide-react";
+import { Car, Clock, DollarSign, Star, Navigation, Phone, CheckCircle, AlertCircle, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import RideCalendar from "./RideCalendar";
 
 const DriverDashboard = () => {
-  const [isOnline, setIsOnline] = useState(false);
-  const [currentRide, setCurrentRide] = useState<{
-    pickup: string;
-    destination: string;
-    passenger: string;
-    fare: string;
-    status: 'pickup' | 'in-progress' | 'completed';
-    pickupTime: string;
-    eta: string;
-    startTime: string;
-    distance: string;
-  } | null>(null);
+  const [currentRideStatus, setCurrentRideStatus] = useState<"waiting" | "pickup" | "enroute" | "completed">("pickup");
+  const [isOnline, setIsOnline] = useState(true);
+
+  const todaysRides = [
+    {
+      id: "R001",
+      time: "10:30 AM",
+      patient: "Mary Johnson",
+      pickup: "123 Oak St",
+      destination: "City Hospital",
+      status: "current",
+      estimatedDuration: "25 min",
+      phone: "+1234567890"
+    },
+    {
+      id: "R002",
+      time: "02:15 PM",
+      patient: "Robert Brown",
+      pickup: "456 Pine Ave",
+      destination: "Medical Center",
+      status: "upcoming",
+      estimatedDuration: "30 min",
+      phone: "+1234567891"
+    },
+    {
+      id: "R003",
+      time: "04:45 PM",
+      patient: "Lisa Garcia",
+      pickup: "789 Elm St",
+      destination: "Therapy Clinic",
+      status: "upcoming",
+      estimatedDuration: "20 min",
+      phone: "+1234567892"
+    }
+  ];
 
   const driverStats = [
-    { label: "Total Earnings", value: "$12,450", subtext: "+12% this month", icon: DollarSign, color: "text-green-600" },
-    { label: "Rides Completed", value: "452", subtext: "+8% this month", icon: Users, color: "text-blue-600" },
-    { label: "Average Rating", value: "4.8", subtext: "out of 5", icon: Star, color: "text-yellow-600" },
-    { label: "Hours Online", value: "247", subtext: "this month", icon: Clock, color: "text-orange-600" }
+    { label: "Today's Rides", value: "12", icon: Car, color: "text-blue-600" },
+    { label: "Hours Online", value: "6.5h", icon: Clock, color: "text-green-600" },
+    { label: "Today's Earnings", value: "$247", icon: DollarSign, color: "text-emerald-600" },
+    { label: "Rating", value: "4.8★", icon: Star, color: "text-yellow-600" }
   ];
 
-  const recentRides = [
-    { passenger: "Alice Johnson", route: "Downtown to Airport", time: "9:15 AM", fare: "$22.50", rating: "5.0", status: "completed" },
-    { passenger: "Bob Williams", route: "Uptown to Midtown", time: "8:42 AM", fare: "$18.00", rating: "4.7", status: "completed" },
-    { passenger: "Charlie Brown", route: "West Side to Mall", time: "7:58 AM", fare: "$15.75", rating: "4.9", status: "completed" },
-    { passenger: "Diana Davis", route: "East Side to Station", time: "7:12 AM", fare: "$25.00", rating: "4.6", status: "completed" }
-  ];
+  const handleRideAction = (action: string, rideId: string) => {
+    switch (action) {
+      case "start_navigation":
+        toast.success("Navigation started!");
+        break;
+      case "call_patient":
+        toast.info("Calling patient...");
+        break;
+      case "arrived_pickup":
+        setCurrentRideStatus("enroute");
+        toast.success("Marked as arrived at pickup location");
+        break;
+      case "complete_ride":
+        setCurrentRideStatus("completed");
+        toast.success("Ride completed successfully!");
+        break;
+      default:
+        break;
+    }
+  };
 
   const toggleOnlineStatus = () => {
     setIsOnline(!isOnline);
-    toast.info(`You are now ${!isOnline ? 'online' : 'offline'}`);
-  };
-
-  const handleBreak = () => {
-    toast.info("Taking a break - new ride requests paused");
-  };
-
-  const handleEmergency = () => {
-    toast.warning("Emergency mode activated - notifying support");
-  };
-
-  const handlePickup = () => {
-    setCurrentRide({ ...currentRide!, status: 'in-progress' });
-    toast.success("Ride started - navigating to destination");
-  };
-
-  const handleNavigation = () => {
-    toast.info("Navigating to destination");
-  };
-
-  const handleComplete = () => {
-    setCurrentRide(null);
-    toast.success("Ride completed - payment processed");
+    toast.success(`You are now ${!isOnline ? 'online' : 'offline'}`);
   };
 
   return (
-    <div className="space-y-3 md:space-y-4 lg:space-y-6 px-2 sm:px-0">
-      {/* Driver Status & Controls - Fully mobile responsive */}
-      <Card className={`border-2 ${isOnline ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'}`}>
-        <CardContent className="p-2 sm:p-3 md:p-4">
-          <div className="flex flex-col gap-2 sm:gap-3">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-              <span className="font-medium text-xs sm:text-sm">Driver Status</span>
-              <Badge variant={isOnline ? "default" : "secondary"} className="text-xs px-1.5 py-0.5">
-                {isOnline ? 'ONLINE' : 'OFFLINE'}
-              </Badge>
+    <div className="space-y-6">
+      {/* Online Status Toggle */}
+      <Card className={`border-2 ${isOnline ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'}`}></div>
+              <span className="font-semibold">{isOnline ? 'Online' : 'Offline'}</span>
+              <span className="text-sm text-slate-600">
+                {isOnline ? 'Available for rides' : 'Not accepting rides'}
+              </span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
-              <Button onClick={toggleOnlineStatus} variant="outline" size="sm" className="text-xs h-8">
-                {isOnline ? 'Go Offline' : 'Go Online'}
-              </Button>
-              <Button onClick={handleBreak} variant="outline" size="sm" disabled={!isOnline} className="text-xs h-8">
-                <Coffee className="h-3 w-3 mr-1" />
-                Break
-              </Button>
-              <Button onClick={handleEmergency} variant="destructive" size="sm" className="text-xs h-8">
-                <AlertTriangle className="h-3 w-3 mr-1" />
-                Emergency
-              </Button>
-            </div>
+            <Button onClick={toggleOnlineStatus} variant={isOnline ? "destructive" : "default"}>
+              {isOnline ? 'Go Offline' : 'Go Online'}
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Driver Stats - Mobile optimized grid */}
-      <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4 lg:gap-4">
+      {/* Driver Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {driverStats.map((stat, index) => (
           <Card key={index}>
-            <CardContent className="p-2 sm:p-3">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs text-slate-600 truncate">{stat.label}</p>
-                  <p className="text-sm sm:text-lg font-bold truncate">{stat.value}</p>
-                  <p className="text-xs text-slate-500 truncate">{stat.subtext}</p>
+                <div>
+                  <p className="text-sm text-slate-600">{stat.label}</p>
+                  <p className="text-2xl font-bold">{stat.value}</p>
                 </div>
-                <stat.icon className={`h-4 w-4 sm:h-6 sm:w-6 ${stat.color} flex-shrink-0 ml-1`} />
+                <stat.icon className={`h-8 w-8 ${stat.color}`} />
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Current Ride & Performance - Mobile stacked */}
-      <div className="grid grid-cols-1 gap-3 md:gap-4 xl:grid-cols-3 xl:gap-6">
-        {/* Current Ride */}
-        <div className="xl:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Current & Upcoming Rides */}
+        <div className="lg:col-span-2">
           <Card>
-            <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                <Navigation className="h-4 w-4 text-blue-600" />
-                {currentRide ? 'Current Ride' : 'No Active Ride'}
-                {currentRide && (
-                  <Badge variant="secondary" className="ml-auto text-xs">
-                    {currentRide.distance}
-                  </Badge>
-                )}
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Car className="h-5 w-5 text-blue-600" />
+                Today's Schedule
+                <Badge variant={isOnline ? "default" : "secondary"} className="ml-auto">
+                  {isOnline ? 'Active' : 'Offline'}
+                </Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 sm:space-y-3 p-3 sm:p-6">
-              {currentRide ? (
-                <>
-                  <div className="grid grid-cols-1 gap-2 sm:gap-3">
-                    <div className="p-2 sm:p-3 rounded-lg bg-blue-50 border border-blue-200">
-                      <div className="flex items-center gap-2 mb-1">
-                        <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
-                        <span className="font-medium text-xs sm:text-sm">Pickup</span>
+            <CardContent>
+              <div className="space-y-4">
+                {todaysRides.map((ride) => (
+                  <div key={ride.id} className={`p-4 rounded-lg border-2 ${
+                    ride.status === 'current' 
+                      ? 'border-blue-500 bg-blue-50' 
+                      : 'border-slate-200 bg-white'
+                  }`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant={ride.status === 'current' ? 'default' : 'secondary'}>
+                          {ride.status === 'current' ? 'Current Ride' : 'Upcoming'}
+                        </Badge>
+                        <span className="font-medium">{ride.time}</span>
+                        {ride.status === 'current' && (
+                          <Badge variant="outline" className="text-green-600">
+                            {currentRideStatus}
+                          </Badge>
+                        )}
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-700">{currentRide.pickup}</p>
-                      <p className="text-xs text-slate-500 mt-1">{currentRide.pickupTime}</p>
                     </div>
-                    <div className="p-2 sm:p-3 rounded-lg bg-green-50 border border-green-200">
-                      <div className="flex items-center gap-2 mb-1">
-                        <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
-                        <span className="font-medium text-xs sm:text-sm">Destination</span>
+                    
+                    <div className="space-y-2 mb-3">
+                      <p className="font-semibold text-slate-900">{ride.patient}</p>
+                      <div className="text-sm text-slate-600 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-3 w-3 text-green-600" />
+                          <span>From: {ride.pickup}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-3 w-3 text-red-600" />
+                          <span>To: {ride.destination}</span>
+                        </div>
+                        <p>Duration: {ride.estimatedDuration}</p>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-700">{currentRide.destination}</p>
-                      <p className="text-xs text-slate-500 mt-1">ETA: {currentRide.eta}</p>
                     </div>
-                  </div>
 
-                  <div className="p-2 sm:p-3 rounded-lg bg-slate-50 border">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-xs sm:text-sm">Passenger: {currentRide.passenger}</span>
-                      <span className="text-xs sm:text-sm text-slate-600">Fare: {currentRide.fare}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
-                      <Clock className="h-3 w-3" />
-                      <span>Started {currentRide.startTime}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    {currentRide.status === 'pickup' && (
-                      <Button onClick={handlePickup} className="w-full text-xs h-9">
-                        <UserCheck className="h-3 w-3 mr-2" />
-                        Confirm Pickup
-                      </Button>
-                    )}
-                    {currentRide.status === 'in-progress' && (
-                      <div className="grid grid-cols-2 gap-2">
-                        <Button onClick={handleNavigation} variant="outline" className="text-xs h-9">
-                          <Navigation className="h-3 w-3 mr-1" />
-                          Navigate
-                        </Button>
-                        <Button onClick={handleComplete} className="text-xs h-9">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Complete
-                        </Button>
+                    {ride.status === 'current' && (
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <Button 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={() => handleRideAction("start_navigation", ride.id)}
+                          >
+                            <Navigation className="h-4 w-4 mr-2" />
+                            Navigate
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleRideAction("call_patient", ride.id)}
+                          >
+                            <Phone className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        {currentRideStatus === "pickup" && (
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="w-full"
+                            onClick={() => handleRideAction("arrived_pickup", ride.id)}
+                          >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Arrived at Pickup
+                          </Button>
+                        )}
+                        {currentRideStatus === "enroute" && (
+                          <Button 
+                            size="sm" 
+                            className="w-full"
+                            onClick={() => handleRideAction("complete_ride", ride.id)}
+                          >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Complete Ride
+                          </Button>
+                        )}
                       </div>
                     )}
                   </div>
-                </>
-              ) : (
-                <div className="text-center py-4 sm:py-8">
-                  <Car className="h-8 w-8 sm:h-12 sm:w-12 text-slate-400 mx-auto mb-2 sm:mb-3" />
-                  <p className="text-sm text-slate-600 mb-2">No active rides</p>
-                  <p className="text-xs text-slate-500 px-4">
-                    {isOnline ? 'Waiting for ride requests...' : 'Go online to receive ride requests'}
-                  </p>
-                </div>
-              )}
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Performance */}
-        <div className="xl:col-span-1">
+        {/* Calendar */}
+        <div className="lg:col-span-1">
           <Card>
-            <CardHeader className="pb-2 sm:pb-3">
-              <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                <TrendingUp className="h-4 w-4 text-green-600" />
-                Today's Performance
-              </CardTitle>
+            <CardHeader>
+              <CardTitle>Schedule Calendar</CardTitle>
             </CardHeader>
-            <CardContent className="p-3 sm:p-6">
-              <div className="space-y-2 sm:space-y-4">
-                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-green-50">
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
-                    <span className="text-xs sm:text-sm font-medium">Earnings</span>
-                  </div>
-                  <span className="font-bold text-green-600 text-sm sm:text-base">$247.50</span>
-                </div>
-                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-blue-50">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
-                    <span className="text-xs sm:text-sm font-medium">Rides</span>
-                  </div>
-                  <span className="font-bold text-blue-600 text-sm sm:text-base">12</span>
-                </div>
-                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-purple-50">
-                  <div className="flex items-center gap-2">
-                    <Star className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600" />
-                    <span className="text-xs sm:text-sm font-medium">Rating</span>
-                  </div>
-                  <span className="font-bold text-purple-600 text-sm sm:text-base">4.9★</span>
-                </div>
-                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg bg-orange-50">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-orange-600" />
-                    <span className="text-xs sm:text-sm font-medium">Online</span>
-                  </div>
-                  <span className="font-bold text-orange-600 text-sm sm:text-base">7.5h</span>
-                </div>
-              </div>
+            <CardContent>
+              <RideCalendar />
             </CardContent>
           </Card>
         </div>
       </div>
 
-      {/* Recent Rides - Mobile optimized */}
+      {/* Driver Performance */}
       <Card>
-        <CardHeader className="pb-2 sm:pb-3">
-          <CardTitle className="flex items-center justify-between text-sm sm:text-base">
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-purple-600" />
-              Recent Rides
-            </div>
-            <Button size="sm" variant="outline" className="text-xs h-7">
-              View All
-            </Button>
-          </CardTitle>
+        <CardHeader>
+          <CardTitle>Performance Summary</CardTitle>
         </CardHeader>
-        <CardContent className="p-3 sm:p-6">
-          <div className="space-y-2 sm:space-y-3">
-            {recentRides.map((ride, index) => (
-              <div key={index} className="p-2 sm:p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs sm:text-sm font-medium truncate">{ride.passenger}</span>
-                      <Badge variant={ride.status === 'completed' ? 'default' : 'secondary'} className="text-xs px-1.5 py-0.5">
-                        {ride.status}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-xs sm:text-sm font-medium text-green-600">{ride.fare}</span>
-                      <span className="text-xs text-slate-500">{ride.rating}★</span>
-                    </div>
-                  </div>
-                  <div className="text-xs text-slate-600">
-                    <p className="truncate">{ride.route}</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Clock className="h-3 w-3" />
-                      <span>{ride.time}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-green-600">98%</p>
+              <p className="text-sm text-slate-600">On-Time Rate</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-blue-600">4.8</p>
+              <p className="text-sm text-slate-600">Avg Rating</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-purple-600">156</p>
+              <p className="text-sm text-slate-600">Total Rides</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-bold text-emerald-600">$2,847</p>
+              <p className="text-sm text-slate-600">This Month</p>
+            </div>
           </div>
         </CardContent>
       </Card>
