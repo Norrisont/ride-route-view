@@ -5,9 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Users, Car, MapPin, Clock, AlertTriangle, CheckCircle, UserCheck, Route } from "lucide-react";
 import { toast } from "sonner";
-import VehicleMap from "./VehicleMap";
-import ScheduledRides from "./ScheduledRides";
-import PendingRides from "./PendingRides";
+import GoogleMap from "./GoogleMap";
+import LiveScheduling from "./LiveScheduling";
 import NotificationsPanel from "./NotificationsPanel";
 
 const DispatcherDashboard = () => {
@@ -117,7 +116,7 @@ const DispatcherDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0 h-[calc(100%-80px)]">
-              <VehicleMap />
+              <GoogleMap />
             </CardContent>
           </Card>
         </div>
@@ -168,11 +167,8 @@ const DispatcherDashboard = () => {
         </div>
       </div>
 
-      {/* Rides Management */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <ScheduledRides />
-        <PendingRides />
-      </div>
+      {/* Live Scheduling */}
+      <LiveScheduling />
 
       {/* Recent Activity */}
       <Card>
